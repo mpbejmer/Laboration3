@@ -1,6 +1,7 @@
-package orig2011.v0;
+package orig2011.v1;
 
 import javax.swing.JFrame;
+import orig2011.v0.*;
 
 /**
  * This class creates an AWT window which will contain the game.
@@ -10,7 +11,7 @@ public class Main {
 		// Create a new frame (a window)
 		JFrame frame = new JFrame();
 
-		GUIView guiView = new GUIView(new GameFactory());
+		GUIView guiView = new GUIView(new ReversiFactory());
 
 		frame.setTitle("Games 2.0");
 
