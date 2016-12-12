@@ -3,7 +3,7 @@ package orig2011.v3;
 import java.awt.Dimension;
 import java.awt.Graphics;
 
-public abstract class BlankTile implements GameTile {
+public class BlankTile implements GameTile {
 	
 	/**
 	 * Draws itself in a given graphics context, position and size.
