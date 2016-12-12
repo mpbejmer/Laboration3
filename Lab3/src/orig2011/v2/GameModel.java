@@ -3,11 +3,6 @@ package orig2011.v2;
 
 import java.awt.Dimension;
 
-import orig2011.v0.Constants;
-import orig2011.v0.GameOverException;
-import orig2011.v0.GameTile;
-import orig2011.v0.Position;
-
 /**
  * Common superclass for all game model classes.
  * 

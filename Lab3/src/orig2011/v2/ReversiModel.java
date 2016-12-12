@@ -4,15 +4,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 
-import orig2011.v0.CompositeTile;
-import orig2011.v0.Constants;
-import orig2011.v0.CrossTile;
-import orig2011.v0.GameOverException;
-import orig2011.v0.GameTile;
-import orig2011.v0.Position;
-import orig2011.v0.RoundTile;
-import orig2011.v0.SquareTile;
-
 /**
  * A somewhat defective implementation of the game Reversi. The purpose
  * of this class is to illustrate shortcomings in the game framework.
@@ -140,8 +131,16 @@ public class ReversiModel extends GameUtils {
 	 *            The position to test.
 	 * @return true if position is empty, false otherwise.
 	 */
+//	private boolean isPositionEmpty(final Position pos) {
+//		return this.board[pos.getX()][pos.getY()] == PieceColor.EMPTY;
+//	}
+	
 	private boolean isPositionEmpty(final Position pos) {
-		return this.board[pos.getX()][pos.getY()] == PieceColor.EMPTY;
+		PieceColor t =this.board[pos.getX()][pos.getY()];
+		if(t==PieceColor.EMPTY || t==PieceColor.BLACK_POSSIBLE_CURSOR || t==PieceColor.WHITE_POSSIBLE_CURSOR ){
+			return true;
+		}
+		else return false;
 	}
 
 	/**
@@ -171,12 +170,6 @@ public class ReversiModel extends GameUtils {
 
 	private void tryPlay() {
 		if (isPositionEmpty(this.cursorPos)) {
-			GameTile t;
-			if (this.turn == Turn.BLACK) {
-				t = blackGridTile;
-			} else {
-				t = whiteGridTile;
-			}
 			if (canTurn(this.turn, this.cursorPos)) {
 				turnOver(this.turn, this.cursorPos);
 				this.board[this.cursorPos.getX()][this.cursorPos.getY()] =
@@ -345,20 +338,23 @@ public class ReversiModel extends GameUtils {
 	}
 
 	private void removeCursor(final Position oldCursorPos) {
-		PieceColor t = this.board[oldCursorPos.getX()][oldCursorPos.getY()];
+		PieceColor t = this.board[this.cursorPos.getX()][this.cursorPos.getY()];
+		
+		if(t==PieceColor.BLACK_CURSOR|| t==PieceColor.WHITE_CURSOR||t==PieceColor.WHITE_POSSIBLE_CURSOR||t==PieceColor.BLACK_POSSIBLE_CURSOR){
+			
+		}
 		
 		switch (t){
-		case BLACK_CURSOR: 	this.board[this.cursorPos.getX()][this.cursorPos.getY()]= PieceColor.BLACK;
+		case BLACK_CURSOR: 	this.board[oldCursorPos.getX()][oldCursorPos.getY()]= PieceColor.BLACK;
 										break;
-		case BLACK_POSSIBLE_CURSOR: this.board[this.cursorPos.getX()][this.cursorPos.getY()]= PieceColor.EMPTY;
+		case WHITE_CURSOR: this.board[oldCursorPos.getX()][oldCursorPos.getY()]= PieceColor.WHITE;
 										break;
-		case WHITE_POSSIBLE_CURSOR: this.board[this.cursorPos.getX()][this.cursorPos.getY()]= PieceColor.EMPTY;
+		case EMPTY_CURSOR: this.board[oldCursorPos.getX()][oldCursorPos.getY()]= PieceColor.EMPTY;
 										break;
-		case EMPTY_CURSOR: this.board[this.cursorPos.getX()][this.cursorPos.getY()]= PieceColor.EMPTY;
+		case BLACK_POSSIBLE_CURSOR: this.board[oldCursorPos.getX()][oldCursorPos.getY()]= PieceColor.EMPTY;
 										break;
-		case WHITE_CURSOR: this.board[this.cursorPos.getX()][this.cursorPos.getY()]= PieceColor.WHITE;
+		case WHITE_POSSIBLE_CURSOR: this.board[oldCursorPos.getX()][oldCursorPos.getY()]= PieceColor.EMPTY;
 										break;
-		
 		
 		}
 		
@@ -367,7 +363,7 @@ public class ReversiModel extends GameUtils {
 	private void updateCursor() {
 		PieceColor t = this.board[this.cursorPos.getX()][this.cursorPos.getY()];
 		if(t == PieceColor.BLACK){this.board[this.cursorPos.getX()][this.cursorPos.getY()] = PieceColor.BLACK_CURSOR;}
-		if(t == PieceColor.WHITE){this.board[this.cursorPos.getX()][this.cursorPos.getY()] = PieceColor.WHITE_CURSOR;}
+		else if(t == PieceColor.WHITE){this.board[this.cursorPos.getX()][this.cursorPos.getY()] = PieceColor.WHITE_CURSOR;}
 		else if (canTurn(this.turn, this.cursorPos)) {
 			if (this.turn == Turn.BLACK) {
 				this.board[cursorPos.getX()][cursorPos.getY()] = PieceColor.BLACK_POSSIBLE_CURSOR;
@@ -383,14 +379,14 @@ public class ReversiModel extends GameUtils {
 		PieceColor t = this.board[x][y];
 
 		switch (t){
-		case BLACK: return blackTile;
-		case WHITE:	return whiteTile;
+		case BLACK: return blackGridTile;
+		case WHITE:	return whiteGridTile;
 		case EMPTY:			return blankTile;
-		case BLACK_CURSOR: 	return cursorBlackTile;
-		case WHITE_CURSOR: 	return cursorWhiteTile;
+		case BLACK_CURSOR: 	return new CompositeTile(blackTile, cursorRedTile);
+		case WHITE_CURSOR: 	return new CompositeTile(whiteTile, cursorRedTile);
 		case EMPTY_CURSOR: 	return cursorRedTile;
-		case BLACK_POSSIBLE_CURSOR: 	return blackGridTile;
-		case WHITE_POSSIBLE_CURSOR: 	return whiteGridTile;
+		case BLACK_POSSIBLE_CURSOR: 	return cursorBlackTile;
+		case WHITE_POSSIBLE_CURSOR: 	return cursorWhiteTile;
 		default: return blankTile;
 		}
 	}
