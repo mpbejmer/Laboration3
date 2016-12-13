@@ -3,6 +3,8 @@ package orig2011.v4;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,6 +96,8 @@ public class GoldModel extends GameUtils {
 	private int score;
 	
 	private final PieceColor[][] board;
+	
+	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
 	/**
 	 * Create a new model for the gold game.
@@ -248,6 +252,13 @@ public class GoldModel extends GameUtils {
 	
 	public GameTile getGameboardState(final Position p){
 		return getGameboardState(p.getX(), p.getY());
+	}
+	
+	public void addObserver(PropertyChangeListener l){
+		pcs.addPropertyChangeListener(l);
+	}
+	public void removeObserver(PropertyChangeListener l){
+		pcs.removePropertyChangeListener(l);
 	}
 
 }

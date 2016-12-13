@@ -3,6 +3,8 @@ package orig2011.v4;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 
 /**
  * A somewhat defective implementation of the game Reversi. The purpose
@@ -80,6 +82,8 @@ public class ReversiModel extends GameUtils {
 			new Color(0, 50, 0), 2.0, 0.8);
 	private static final GameTile cursorWhiteTile = new RoundTile(Color.RED,
 				new Color(210, 255, 210), 2.0, 0.8);
+	
+	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
 	private Turn turn;
 	private Position cursorPos;
@@ -390,6 +394,13 @@ public class ReversiModel extends GameUtils {
 	
 	public GameTile getGameboardState(final Position p){
 		return getGameboardState(p.getX(), p.getY());
+	}
+	
+	public void addObserver(PropertyChangeListener l){
+		pcs.addPropertyChangeListener(l);
+	}
+	public void removeObserver(PropertyChangeListener l){
+		pcs.removePropertyChangeListener(l);
 	}
 
 }
