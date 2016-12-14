@@ -1,4 +1,4 @@
-package orig2011.v5;
+package orig2011.v6;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -45,7 +45,7 @@ public class GameController implements Runnable {
 	/**
 	 * Creats a new GameContoller associated with supplied view.
 	 */
-	public GameController(final GameView view) {
+	public GameController(final GameView view) throws GameOverException{
 		
 		this.gameModel = null;
 		this.isRunning = false;
@@ -73,8 +73,13 @@ public class GameController implements Runnable {
 	/**
 	 * Add a key press to the end of the queue
 	 */
-	private synchronized void enqueueKeyPress(final int key) {
-		this.keypresses.add(Integer.valueOf(key));
+	private synchronized void enqueueKeyPress(final int key) throws GameOverException{
+		if (this.gameModel.getUpdateSpeed()<0){
+			this.gameModel.gameUpdate(key);
+		}else{
+			this.keypresses.add(Integer.valueOf(key));
+		}
+		
 	}
 
 	/**

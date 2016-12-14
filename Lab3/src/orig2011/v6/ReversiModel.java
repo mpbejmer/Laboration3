@@ -1,4 +1,4 @@
-package orig2011.v5;
+package orig2011.v6;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -407,6 +407,10 @@ public class ReversiModel extends GameUtils {
 	}
 	public void removeObserver(PropertyChangeListener l){
 		pcs.removePropertyChangeListener(l);
+	}
+	
+	public int getUpdateSpeed(){
+		return 0;
 	}
 
 }
