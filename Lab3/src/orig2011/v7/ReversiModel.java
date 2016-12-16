@@ -1,4 +1,4 @@
-package orig2011.v6;
+package orig2011.v7;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -179,8 +179,9 @@ public class ReversiModel extends GameUtils {
 						(this.turn == Turn.BLACK
 								? PieceColor.BLACK
 								: PieceColor.WHITE);
-				System.out.println("Bong! White: " + this.whiteScore
-						+ "\tBlack: " + this.blackScore);
+				//System.out.println("Bong! White: " + this.whiteScore
+					//	+ "\tBlack: " + this.blackScore);
+				pcs.firePropertyChange("play", this.turn, Turn.nextTurn(this.turn));
 				this.turn = Turn.nextTurn(this.turn);
 			}
 			if (!canTurn(this.turn)) {
@@ -335,7 +336,7 @@ public class ReversiModel extends GameUtils {
 							Math.min(nextCursorPos.getY(), boardSize.height - 1));
 			nextCursorPos = new Position(nextX, nextY);
 			removeCursor(this.cursorPos);
-			pcs.firePropertyChange("cursor", 1, 2);
+			pcs.firePropertyChange("cursor", this.cursorPos, nextCursorPos);
 			
 			this.cursorPos = nextCursorPos;
 			updateCursor();

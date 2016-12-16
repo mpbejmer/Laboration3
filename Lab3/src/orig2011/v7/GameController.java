@@ -1,4 +1,4 @@
-package orig2011.v5;
+package orig2011.v7;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -20,7 +20,7 @@ public class GameController implements Runnable {
 	private GameModel gameModel;
 
 	/** The timeout interval between each update. (millis) */
-	private final int updateInterval;
+	private int updateInterval;
 
 	/** True when game is running. */
 	private boolean isRunning;
@@ -45,9 +45,8 @@ public class GameController implements Runnable {
 	/**
 	 * Creats a new GameContoller associated with supplied view.
 	 */
-	public GameController(final GameView view) {
-		
-		this.view = view;
+	public GameController(final GameView view){
+		this.view=view;
 		this.gameModel = null;
 		this.isRunning = false;
 		this.updateInterval = 150;
@@ -61,16 +60,29 @@ public class GameController implements Runnable {
 			@SuppressWarnings("synthetic-access")
 			@Override
 			public void keyPressed(final KeyEvent event) {
-				enqueueKeyPress(event.getKeyCode());
+				if(updateInterval()<=0){
+					if(isRunning){
+						updateGame(event.getKeyCode());
+					}
+						
+				}
+				else{
+					enqueueKeyPress(event.getKeyCode());
+				}
+				
 			}
 		};
+
 	}
 
 	/**
 	 * Add a key press to the end of the queue
 	 */
-	private synchronized void enqueueKeyPress(final int key) {
-		this.keypresses.add(Integer.valueOf(key));
+	private synchronized void enqueueKeyPress(final int key){
+		
+			this.keypresses.add(Integer.valueOf(key));
+		
+		
 	}
 
 	/**
@@ -103,14 +115,19 @@ public class GameController implements Runnable {
 
 		// Tell the view what to paint...
 		this.view.setModel(gameModel);
+		
+		this.updateInterval=gameModel.getUpdateSpeed();
 
 		// Actually start the game
 		this.gameModel = gameModel;
 		this.isRunning = true;
 
 		// Create the new thread and start it...
-		this.gameThread = new Thread(this);
-		this.gameThread.start();
+		if(this.updateInterval>0){
+			this.gameThread = new Thread(this);
+			this.gameThread.start();
+		}
+		
 	}
 
 	/**
@@ -139,6 +156,9 @@ public class GameController implements Runnable {
 			}
 		}
 	}
+	public int updateInterval(){
+		return this.updateInterval;
+	}
 
 	/**
 	 * This code runs the game in a different thread.
@@ -146,14 +166,18 @@ public class GameController implements Runnable {
 	@Override
 	public void run() {
 		while (this.isRunning) {
+			updateGame(nextKeyPress());
+		}
+	}
+	public void updateGame(final int key){
 			try {
 				// Tell model to update, send next key press.
 				// or 0 if no new keypress since last update.
-				this.gameModel.gameUpdate(nextKeyPress());
+				this.gameModel.gameUpdate(key);
 
-				this.view.repaint();
+				
+					Thread.sleep(updateInterval());
 
-				Thread.sleep(this.updateInterval);
 			} catch (GameOverException e) {
 				// we got a game over signal, time to exit...
 				// The current implementation ignores the game score
@@ -164,5 +188,6 @@ public class GameController implements Runnable {
 				this.isRunning = false;
 			}
 		}
-	}
+	
 }
+
